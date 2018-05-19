@@ -19,7 +19,6 @@ class OrdersController < ApplicationController
   end
 
   def create
-    byebug
     @order = Order.new(new_order_params)
     if @order.save
       flash[:message] = "New order created"
