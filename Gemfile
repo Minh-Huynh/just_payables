@@ -33,6 +33,7 @@ gem 'bootstrap_form',
   git: "https://github.com/bootstrap-ruby/bootstrap_form.git",
   branch: "master" 
 gem 'bootstrap-datepicker-rails'
+gem 'chartkick'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password

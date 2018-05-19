@@ -20,7 +20,7 @@ FactoryBot.define do
     vendor
     contact
     show
-    term { Order.terms.values.sample }
+    term { ["N30","N90"].sample }
     sequence(:invoice_number) {Faker::Commerce.promotion_code}
     sequence(:due_on) {Faker::Date.between(2.days.ago, 1.year.from_now)} 
     sequence(:order_amount) {Faker::Commerce.price}

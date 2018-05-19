@@ -16,4 +16,6 @@
 //= require popper
 //= require bootstrap-sprockets
 //= require bootstrap-datepicker
+//= require Chart.bundle
+//= require chartkick
 //= require_tree .

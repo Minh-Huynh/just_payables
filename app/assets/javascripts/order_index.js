@@ -9,8 +9,12 @@ $(document).ready(function() {
   minViewMode: "months"
   });
 
-  $(".filter_datepicker, .search").on("keyup", function(e){
-    console.log("test");
+  $(".orders_container").on('keyup', '.filter_datepicker', function(e){
+      if(e.which == 13){
+           $(this).closest('form').submit();
+       }
+    });
+  $(".orders_container").on('keyup', '.order-search', function(e){
       if(e.which == 13){
            $(this).closest('form').submit();
        }

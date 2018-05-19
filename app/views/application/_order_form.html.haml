@@ -26,7 +26,7 @@
           = ff.text_field :name, label_class: "font-weight-bold"
     = f.text_field :order_amount, label_class: "font-weight-bold", placeholder: "0.00"
     = f.text_area :description, label_class: "font-weight-bold"
-    = f.select :term, options_for_select(Order.term_options), {label_class: "font-weight-bold"}
+    = f.text_field :term, label_class: "font-weight-bold"
     = f.text_field :due_on, value: format_date(@order.due_on),label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}
     = f.text_field :paid_on, value: format_date(@order.paid_on), label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}
     = f.text_field :invoice_number, label_class: "font-weight-bold"

@@ -1,0 +1,11 @@
+.col-md-10.offset-md-1
+= bootstrap_form_tag url: '/dashboard', method: "GET" do |f|
+  = f.text_field :month_and_year, label: "Month/Year", value: params[:month_and_year], label_class: "font-weight-bold col-md-2 offset-md-5 text-center", class: "filter_datepicker col-md-2 offset-md-5" , data: {provide: 'datepicker'}
+.text-center
+  %h1 #{convert_month_year_to_string(@month_and_year)} Ordered total
+  %h2.ordered_amount #{number_to_currency(@orders_ordered.sum(:order_amount))}
+  %h2.ordered_quantity #{@orders_ordered.count} orders
+  %h1 #{convert_month_year_to_string(@month_and_year)} Payables Total
+  %h2.payables_amount #{number_to_currency(@orders_due.sum(:order_amount))}
+  %h2.payables_quantity #{@orders_due.count} orders
+  = bar_chart Order.all.group_by{|o| o.due_on.beginning_of_month}

@@ -5,7 +5,7 @@ class Order < ApplicationRecord
   belongs_to :contact, optional: true
   accepts_nested_attributes_for :vendor, :contact, :show
   validates :order_amount, presence: true
-  enum term:{N30: 0, N90: 1}
+   
 
   def self.term_options
     self.terms.map {|k,_| [k, k]}
@@ -36,11 +36,12 @@ class Order < ApplicationRecord
   end
 
   def self.search(term)
-    includes(:vendor, :show).where("description LIKE :search 
-                                          OR term LIKE :search 
-                                          OR invoice_number LIKE :search 
-                                          OR vendors.name LIKE :search 
-                                          OR shows.name LIKE :search", 
-                                          search: term)
+    term = term.downcase if term
+    Order.joins(:vendor, :show).where("description ILIKE :term 
+                                          OR term ILIKE :term 
+                                          OR invoice_number ILIKE :term 
+                                          OR vendors.name ILIKE :term 
+                                          OR shows.name ILIKE :term", 
+                                          term: "%#{term}%")
   end
 end

@@ -3,8 +3,10 @@ class OrdersController < ApplicationController
 
   def index
     @orders = Order.filter(params.slice(:by_due_date, :by_ordered_date))
+                   .search(params[:search])
                    .paginate(page: params[:page], per_page: 30)
                    .order(:created_at)
+    @total_amount = @orders.sum(:order_amount)
   end
 
   def new
@@ -49,6 +51,17 @@ class OrdersController < ApplicationController
 
 
   private
+
+  def search(term)
+    Order.include(:vendor, :show).where("description LIKE :search 
+                                          OR term LIKE :search 
+                                          OR invoice_number LIKE :search 
+                                          OR due_on LIKE :search 
+                                          OR paid_on LIKE :search 
+                                          OR vendors.name LIKE :search 
+                                          OR shows.name LIKE :search", 
+                                          search: term)
+  end
 
   def associate_contact_with_vendor(contact, order)
     contact.update(vendor_id: order.vendor_id) if contact.vendor.nil?
