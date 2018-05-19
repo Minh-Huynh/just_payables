@@ -1,17 +1,17 @@
-.col-md-8.offset-md-2
+.col-md-8.offset-md-2.col-12
   =flash_message
   %h2 
     = order.new_record? ? "Create New Order" : "Edit Existing Order"
   = bootstrap_form_for order do |f|
     = f.collection_select :vendor_id, Vendor.all, :id, :name, label_class: "font-weight-bold", label: "select vendor company", include_blank: true
     - if order.new_record?
-      %button.btn.btn-primary.btn-sm.mb-3{"href" => "#new_vendor", "type" => "button", "role" => "button", "aria-expanded" => "false", "data-toggle" => "collapse", "aria-controls" => "new_vendor" }= "new vendor"
+      %button.btn.btn-primary.btn-lg.mb-3{"href" => "#new_vendor", "type" => "button", "role" => "button", "aria-expanded" => "false", "data-toggle" => "collapse", "aria-controls" => "new_vendor" }= "new vendor"
       #new_vendor.collapse
         = f.fields_for :vendor, vendor do |ff|
-          = ff.text_field :name, input_group_class: "col-md-8", label_class: "font-weight-bold"
+          = ff.text_field :name, input_group_class: "col-md-8 input-lg", label_class: "font-weight-bold"
     = f.collection_select :contact_id, Contact.all, :id, :full_name_and_company, label_class: "font-weight-bold", label: "select contact", include_blank: true
     - if order.new_record?
-      %button.btn.btn-primary.btn-sm.mb-3{"href" => "#new_contact", "type" => "button", "role" => "button", "aria-expanded" => "false", "data-toggle" => "collapse", "aria-controls" => "new_contact" }= "new contact"
+      %button.btn.btn-primary.btn-lg.mb-3{"href" => "#new_contact", "type" => "button", "role" => "button", "aria-expanded" => "false", "data-toggle" => "collapse", "aria-controls" => "new_contact" }= "new contact"
       #new_contact.collapse
         = f.fields_for :contact, contact do |ff|
           = ff.text_field :first_name, input_group_class: "col-md-8"
@@ -20,12 +20,12 @@
           = ff.text_field :phone_number, input_group_class: "col-md-8"
     = f.collection_select :show_id, Show.all, :id, :name, label_class: "font-weight-bold", label: "Select Show", include_blank: true
     - if order.new_record?
-      %button.btn.btn-primary.btn-sm.mb-3{"href" => "#new_show", "role" => "button", "type" => "button", "aria-expanded" => "false", "data-toggle" => "collapse", "aria-controls" => "new_show" }= "New Show"
+      %button.btn.btn-primary.btn-lg.mb-3{"href" => "#new_show", "role" => "button", "type" => "button", "aria-expanded" => "false", "data-toggle" => "collapse", "aria-controls" => "new_show" }= "New Show"
       #new_show.collapse
         = f.fields_for :show, show do |ff|
           = ff.text_field :name, label_class: "font-weight-bold"
     = f.text_field :order_amount, label_class: "font-weight-bold", placeholder: "0.00"
-    = f.text_area :description, label_class: "font-weight-bold"
+    = f.text_area :description, label_class: "font-weight-bold", class: "input-lg"
     = f.text_field :term, label_class: "font-weight-bold"
     = f.text_field :due_on, value: format_date(@order.due_on),label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}
     = f.text_field :paid_on, value: format_date(@order.paid_on), label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}

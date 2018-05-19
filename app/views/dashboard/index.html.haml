@@ -8,3 +8,4 @@
   %h1 #{convert_month_year_to_string(@month_and_year)} Payables Total
   %h2.payables_amount #{number_to_currency(@orders_due.sum(:order_amount))}
   %h2.payables_quantity #{@orders_due.count} orders
+
