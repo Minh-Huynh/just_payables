@@ -14,14 +14,24 @@
         <a class="navbar-brand" href="/orders">Just Payables</a>
       </div>
       <div class="navlinks">
-        <span class = "mx-3">
-          <%= link_to "Orders", orders_path %>
-        </span>
-        <span class = "mx-3">
-          <%= link_to "Dashboard", "/dashboard" %>
-        </span>
-        <span class = "mx-3">
-          <%= link_to "Logout", "#" %>
+        <% if logged_in? %>
+          <span class = "mx-3">
+            <%= link_to "Orders", orders_path %>
+          </span>
+          <span class = "mx-3">
+            <%= link_to "Dashboard", "/dashboard" %>
+          </span>
+          <span class = "mx-3">
+            <%= link_to "Sign Up", signup_path %>
+          </span>
+          <span class = "mx-3">
+            <%= link_to 'Logout', logout_path %>
+          </span>
+          <% else %>
+              <span class = "mx-3">
+                <%= link_to "Log In", login_path %>        
+              </span>
+          <% end %>
         </span>
       </div>
   </nav>

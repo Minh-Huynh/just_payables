@@ -1,4 +1,6 @@
 class DashboardController < ApplicationController
+  before_action :authenticate_user
+  
   def index
     @month_and_year = date_params_processing
     @orders_due = Order.by_due_date(@month_and_year)

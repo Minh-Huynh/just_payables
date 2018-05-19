@@ -1,5 +1,6 @@
 class OrdersController < ApplicationController
   helper_method :sort_order
+  before_action :authenticate_user
 
   def index
     @orders = Order.filter(params.slice(:by_due_date, :by_ordered_date))
