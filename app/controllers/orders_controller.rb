@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  helper_method :sort_order
+
   def index
     @orders = Order.filter(params.slice(:by_due_date, :by_ordered_date))
                    .paginate(page: params[:page], per_page: 30)

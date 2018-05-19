@@ -22,4 +22,25 @@ class Order < ApplicationRecord
     where('extract(month from created_at) = ? AND
          extract(year from created_at) = ?', date[0], date[1])
   end
+
+  def paid?
+    !paid_on.nil?
+  end
+
+  def past_due?
+    due_on <= Date.today
+  end
+
+  def due_this_month?
+    due_on.month == Date.today.month
+  end
+
+  def self.search(term)
+    includes(:vendor, :show).where("description LIKE :search 
+                                          OR term LIKE :search 
+                                          OR invoice_number LIKE :search 
+                                          OR vendors.name LIKE :search 
+                                          OR shows.name LIKE :search", 
+                                          search: term)
+  end
 end

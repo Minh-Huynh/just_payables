@@ -4,9 +4,10 @@
   =flash_message
   = bootstrap_form_tag url: '/orders', method: "GET" do |f|
     = f.text_field :by_due_date, value: params[:by_due_date], label_class: "font-weight-bold float-left mr-2", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
-  = bootstrap_form_tag url: '/orders', method: "GET" do |f|
     = f.text_field :by_ordered_date, value: params[:by_ordered_date], label_class: "font-weight-bold float-left mr-2 ml-3", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
-  = link_to "Create New Order", new_order_path, {class: "btn btn-primary my-4 float-right"}
+    = f.text_field :search, hide_label: true, value: params[:search], placeholder: "Type to Search and Press Enter", label_class: "font-weight-bold", class: "col-md-4 float-right search"
+  = link_to "View All Orders", orders_path, {class: "btn btn-success ml-3"}
+  = link_to "Create New Order", new_order_path, {class: "btn btn-primary my-4 float-right"} 
   %table.table.table-hover.table-bordered
     %thead
     %tbody.thead-dark
@@ -20,7 +21,7 @@
         %th{scope: "col"} Invoice Number
         %th{scope: "col"} Show
       - @orders.each do |o|
-        %tr{class: "clickable-row", data: {href: edit_order_path(o) }, style: "cursor:pointer;"}
+        %tr{class: "clickable-row #{row_format(o)}", data: {href: edit_order_path(o) }, style: "cursor:pointer;"}
           %td= o.vendor.name
           %td= number_to_currency(o.order_amount)
           %td= o.description
