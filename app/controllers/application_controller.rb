@@ -10,6 +10,8 @@ class ApplicationController < ActionController::Base
     if !logged_in?
       flash.now[:notice] = "Please Log in"
       redirect_to login_path
+    else
+      @current_user = User.find(session[:user_id])
     end
   end
 end
