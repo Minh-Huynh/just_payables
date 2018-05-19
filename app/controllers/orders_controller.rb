@@ -68,8 +68,8 @@ class OrdersController < ApplicationController
   end
 
   def convert_date_strings(params)
-    [:due_on, :paid_on].each do |attribute|
-      params[attribute] = DateTime.strptime(params[attribute], '%m/%d/%Y')
+    params.slice(:due_on, :paid_on).each do |key, value|
+      params[key] = DateTime.strptime(params[key], '%m/%d/%Y') unless params[key].empty?
     end
   end
 
