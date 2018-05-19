@@ -28,11 +28,11 @@ class Order < ApplicationRecord
   end
 
   def past_due?
-    due_on <= Date.today
+    due_on <= Date.today if due_on.present?
   end
 
   def due_this_month?
-    due_on.month == Date.today.month
+    due_on.month == Date.today.month if due_on.present?
   end
 
   def self.search(term)
