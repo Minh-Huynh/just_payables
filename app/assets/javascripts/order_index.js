@@ -2,11 +2,10 @@ $(document).ready(function() {
   $(".clickable-row").click(function() {
       window.location = $(this).data("href");
   });
-
-  $(".filter_datepicker").datepicker( {
-  format: "mm-yyyy",
-  startView: "months", 
-  minViewMode: "months"
+  $(".order_datepicker, .filter_datepicker").datepicker({
+    format: "mm-yyyy",
+    startView: "months", 
+    minViewMode: "months"
   });
 
   $(".orders_container").on('keyup', '.filter_datepicker', function(e){
@@ -19,4 +18,11 @@ $(document).ready(function() {
            $(this).closest('form').submit();
        }
     });
+
+  $(".orders_container").on('click','.received-btn', function(event) {
+    event.stopPropagation();
+  });
+  $(".orders_container").on('click','.paid-btn', function(event) {
+    event.stopPropagation();
+  });
 });

@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   before_action :authenticate_user
 
   def index
-    @orders = Order.filter(params.slice(:by_due_date, :by_ordered_date))
+    @orders = Order.filter(params.slice(:by_due_date, :by_ordered_date, :by_ship_date))
                    .search(params[:search])
                    .paginate(page: params[:page], per_page: 30)
                    .order(:created_at)
@@ -12,18 +12,13 @@ class OrdersController < ApplicationController
 
   def new
     @order= Order.new
-    @vendor = @order.build_vendor
-    @contact = @order.build_contact
-    @show = @order.build_show
-    @vendors = Vendor.all
   end
 
   def create
-    @order = Order.new(new_order_params)
+    @order = Order.new(order_params)
     if @order.save
       flash[:message] = "New order created"
       @contact = @order.contact
-      associate_contact_with_vendor(@contact, @order)
       redirect_to orders_path
     else
       flash[:error] = "Order failed to be created"
@@ -40,7 +35,7 @@ class OrdersController < ApplicationController
 
   def update
     @order = Order.find(params[:id])
-    if @order.update(edit_order_params)
+    if @order.update(order_params)
       flash[:message] = "Order updated"
       redirect_to orders_path
     else
@@ -63,44 +58,20 @@ class OrdersController < ApplicationController
                                           search: term)
   end
 
-  def associate_contact_with_vendor(contact, order)
-    contact.update(vendor_id: order.vendor_id) if contact.vendor.nil?
-  end
-
   def convert_date_strings(params)
-    params.slice(:due_on, :paid_on).each do |key, value|
-      params[key] = DateTime.strptime(params[key], '%m/%d/%Y') unless params[key].empty?
+    params.slice(:due_on, :paid_on, :ship_on, :received_on).each do |key, value|
+      if /\d{2}\/\d{2}\/\d{4}/ =~ params[key]
+        params[key] = DateTime.strptime(params[key], '%m/%d/%Y') unless params[key].empty?
+      end
     end
   end
 
-  def new_order_params
-    permitted_params = params.require(:order).permit(:contact_id, :vendor_id, :show_id, 
+  def order_params
+    permitted_params = params.require(:order).permit(:received_on, :contact_id, :vendor_id, :show_id, 
                                   :order_amount, :description, :term,
-                                  :paid_on, :due_on, :invoice_number, 
-                                  vendor_attributes: [:name], 
-                                  contact_attributes: [:first_name, 
-                                  :last_name, :email, :phone_number], 
-                                  show_attributes: [:name])
-    convert_date_strings(permitted_params)
-    drop_new_model_attributes(permitted_params)
-  end
-
-  def edit_order_params
-    permitted_params = params.require(:order).permit(:contact_id, :vendor_id, :show_id, 
-                                  :order_amount, :description, :term,
-                                  :paid_on, :due_on, :invoice_number, 
-                                  vendor_attributes: [:name], 
-                                  contact_attributes: [:first_name, 
-                                  :last_name, :email, :phone_number], 
-                                  show_attributes: [:name])
+                                  :paid_on, :due_on, :ship_on, :invoice_number,
+                                  :vendor, :show, :contact, :shipping_percentage)
     convert_date_strings(permitted_params)
     permitted_params
-  end
-
-  def drop_new_model_attributes(params)
-    params = params.except(:contact_attributes) unless params[:contact_id].empty?
-    params = params.except(:show_attributes) unless params[:show_id].empty?
-    params = params.except(:vendor_attributes) unless params[:vendor_id].empty?
-    params.reject{|_,v| v.blank? }
   end
 end

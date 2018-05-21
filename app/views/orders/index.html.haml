@@ -1,35 +1,43 @@
 = stylesheet_link_tag "will_paginate"
 
-.col-md-10.col-xs-12.offset-md-1.orders_container
+.col-md-11.col-xs-12.offset-md-1.orders_container
   =flash_message
   = bootstrap_form_tag url: '/orders', method: "GET" do |f|
     = f.text_field :by_due_date, value: params[:by_due_date], label_class: "font-weight-bold float-left mr-2", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
-    = f.text_field :by_ordered_date, value: params[:by_ordered_date], label_class: "font-weight-bold float-left mr-2 ml-3", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
-    = f.text_field :search, hide_label: true, value: params[:search], placeholder: "Type to Search and Press Enter", label_class: "font-weight-bold", class: "col-md-4 float-right order-search"
-  = link_to "View All Orders", orders_path, {class: "btn btn-success ml-3"}
-  = link_to "Create New Order", new_order_path, {class: "btn btn-primary my-4 float-right"}
-  .total_amount_current_orders.font-weight-bold.float-left.col-md-5.mt-5 Total For Orders Displayed: #{number_to_currency(@orders.sum(:order_amount))}
+    = f.text_field :by_ship_date, value: params[:by_ship_date], label_class: "font-weight-bold float-left mr-2 ml-3", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
+    = f.text_field :search, hide_label: true, value: params[:search], placeholder: "Type to Search and Press Enter", label_class: "font-weight-bold", class: "col-md-4 float-left ml-5 order-search"
+    = f.submit "Set Filters",{class: "btn btn-success ml-3"}
+  = link_to "Create New Order", new_order_path, {class: "btn-lg btn btn-primary my-4 float-right"}
+  .total_amount_current_orders.font-weight-bold.float-left.col-md-5.mt-5 Total For Orders Displayed (w/ shipping): #{number_to_currency(@orders.sum(:order_amount_with_shipping))}
   %table.table.table-hover
     %thead
     %tbody.thead-dark
       %tr
         %th{scope: "col"} Vendor
-        %th{scope: "col"} Amount
+        %th{scope: "col"} Amount (w/ Shipping)
         %th{scope: "col"} Description
-        %th{scope: "col"} Terms
         %th{scope: "col"} Due On
-        %th{scope: "col"} Paid On
+        %th{scope: "col"} Ship On
+        %th{scope: "col"} Received On
         %th{scope: "col"} Invoice Number
-        %th{scope: "col"} Show
+        %th{scope: "col"} Actions
       - @orders.each do |o|
         %tr{class: "clickable-row #{row_format(o)}", data: {href: edit_order_path(o) }, style: "cursor:pointer;"}
-          %td= o.vendor.name
-          %td= number_to_currency(o.order_amount)
+          %td= o.vendor
+          %td= number_to_currency(o.order_amount_with_shipping)
           %td= o.description
-          %td= o.term
           %td= format_date(o.due_on)
-          %td= format_date(o.paid_on)
+          %td= format_date(o.ship_on)
+          %td= format_date(o.received_on)
           %td= o.invoice_number
-          %td= o.show&.name
+          %td.text-center 
+            - if !o.received?
+              = form_tag order_path(id: o.id, order: {received_on: DateTime.now}), method: "put" do
+                = submit_tag "Mark as Received", class: "btn btn-primary"
+            - elsif !o.paid?
+              = form_tag order_path(id: o.id, order: {paid_on: format_date(DateTime.now)}), method: "put" do
+                = submit_tag "Mark as Paid", class: "btn btn-danger"
+            - else
+              %strong Received/Paid
   .offset-md-2.col-md-10
     = will_paginate @orders, class: "digg_pagination"
