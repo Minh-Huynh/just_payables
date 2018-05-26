@@ -11,8 +11,8 @@
     = f.text_area :description, label_class: "font-weight-bold", class: "input-lg"
     = f.text_field :term, label_class: "font-weight-bold", placeholder: "Only input the number, ex: 30, NOT N30"
     = f.text_field :shipping_percentage, label: "Shipping percentage (%)", label_class: "font-weight-bold", placeholder: "For 3%, input 3"
+    = f.text_field :ordered_on, value: @order.new_record? ?  format_date(DateTime.now): format_date(@order.ordered_on), label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}
     = f.text_field :ship_on, value: format_date(@order.ship_on), label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}
     = f.text_field :received_on, value: format_date(@order.received_on), label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}
-    = f.text_field :paid_on, value: format_date(@order.paid_on), label_class: "font-weight-bold", class: "order_datepicker", data: {provide: 'datepicker'}
     = f.text_field :invoice_number, label_class: "font-weight-bold"
     = f.submit 

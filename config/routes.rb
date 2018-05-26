@@ -3,9 +3,7 @@ Rails.application.routes.draw do
   root to: 'dashboard#index'
   get 'dashboard', to: 'dashboard#index'
   resources :orders
-  resources :contacts
-  resources :vendors
-  resources :shows
+  resources :payables, only: [:index, :edit, :update]
   resources :users
   resources :sessions
   get 'signup', to: 'users#new', as: 'signup'

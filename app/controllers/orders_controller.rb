@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   before_action :authenticate_user
 
   def index
-    @orders = Order.filter(params.slice(:by_due_date, :by_ordered_date, :by_ship_date))
+    @orders = Order.filter(params.slice(:by_ordered_date, :by_ship_date))
                    .search(params[:search])
                    .paginate(page: params[:page], per_page: 30)
                    .order(:created_at)
@@ -28,9 +28,6 @@ class OrdersController < ApplicationController
 
   def edit
     @order = Order.find(params[:id])
-    @vendor = @order.vendor
-    @contact = @order.contact
-    @show = @order.show
   end
 
   def update
@@ -59,7 +56,7 @@ class OrdersController < ApplicationController
   end
 
   def convert_date_strings(params)
-    params.slice(:due_on, :paid_on, :ship_on, :received_on).each do |key, value|
+    params.slice(:ship_on, :received_on, :ordered_on).each do |key, value|
       if /\d{2}\/\d{2}\/\d{4}/ =~ params[key]
         params[key] = DateTime.strptime(params[key], '%m/%d/%Y') unless params[key].empty?
       end
@@ -68,7 +65,7 @@ class OrdersController < ApplicationController
 
   def order_params
     permitted_params = params.require(:order).permit(:received_on, :contact_id, :vendor_id, :show_id, 
-                                  :order_amount, :description, :term,
+                                  :order_amount, :description, :term, :ordered_on,
                                   :paid_on, :due_on, :ship_on, :invoice_number,
                                   :vendor, :show, :contact, :shipping_percentage)
     convert_date_strings(permitted_params)

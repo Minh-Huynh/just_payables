@@ -1,0 +1,38 @@
+.col-md-8.offset-md-2.col-12.order_container
+  =flash_message
+  %h2 
+    = "Payable Data"
+  .card
+    .card-header
+      Associated Order
+      .float-right
+        = link_to "Edit Order", edit_order_path(@order.id), class: "font-weight-bold"
+    .card-body
+      .description
+        %strong Description: 
+        #{@order.description}
+      .order_amount
+        %strong Order Amount With Shipping:
+        #{number_to_currency(@order.order_amount_with_shipping)}
+      .invoice_number
+        %strong Invoice Number:
+        #{@order.invoice_number}
+      .term
+        %strong Term:
+        #{@order.term}
+      .invoice_number
+        %strong Shipping Percentage:
+        #{@order.shipping_percentage}%
+      .vendor
+        %strong Vendor:
+        #{@order.vendor}
+      .show
+        %strong Show:
+        #{@order.show}
+      .contact
+        %strong Contact:
+        #{@order.contact}
+  = bootstrap_form_for @payable do |f|
+    = f.text_field :due_on, value: format_date(@payable.due_on), label_class: "font-weight-bold mt-3", class: "order_datepicker", data: {provide: 'datepicker'}
+    = f.text_field :paid_on, value: format_date(@payable.paid_on), label_class: "font-weight-bold mt-3", class: "order_datepicker", data: {provide: 'datepicker'}
+    = f.submit 

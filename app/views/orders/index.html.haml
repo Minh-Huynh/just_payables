@@ -1,9 +1,9 @@
-= stylesheet_link_tag "will_paginate"
 
 .col-md-11.col-xs-12.offset-md-1.orders_container
   =flash_message
+  %h2 ORDERS
   = bootstrap_form_tag url: '/orders', method: "GET" do |f|
-    = f.text_field :by_due_date, value: params[:by_due_date], label_class: "font-weight-bold float-left mr-2", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
+    = f.text_field :by_ordered_date, value: params[:by_ordered_date], label_class: "font-weight-bold float-left mr-2", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
     = f.text_field :by_ship_date, value: params[:by_ship_date], label_class: "font-weight-bold float-left mr-2 ml-3", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
     = f.text_field :search, hide_label: true, value: params[:search], placeholder: "Type to Search and Press Enter", label_class: "font-weight-bold", class: "col-md-4 float-left ml-5 order-search"
     = f.submit "Set Filters",{class: "btn btn-success ml-3"}
@@ -16,7 +16,7 @@
         %th{scope: "col"} Vendor
         %th{scope: "col"} Amount (w/ Shipping)
         %th{scope: "col"} Description
-        %th{scope: "col"} Due On
+        %th{scope: "col"} Ordered On
         %th{scope: "col"} Ship On
         %th{scope: "col"} Received On
         %th{scope: "col"} Invoice Number
@@ -26,7 +26,7 @@
           %td= o.vendor
           %td= number_to_currency(o.order_amount_with_shipping)
           %td= o.description
-          %td= format_date(o.due_on)
+          %td= format_date(o.ordered_on)
           %td= format_date(o.ship_on)
           %td= format_date(o.received_on)
           %td= o.invoice_number
@@ -34,10 +34,8 @@
             - if !o.received?
               = form_tag order_path(id: o.id, order: {received_on: DateTime.now}), method: "put" do
                 = submit_tag "Mark as Received", class: "btn btn-primary"
-            - elsif !o.paid?
-              = form_tag order_path(id: o.id, order: {paid_on: format_date(DateTime.now)}), method: "put" do
-                = submit_tag "Mark as Paid", class: "btn btn-danger"
             - else
-              %strong Received/Paid
+              %strong Received
   .offset-md-2.col-md-10
     = will_paginate @orders, class: "digg_pagination"
+= stylesheet_link_tag "will_paginate"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180520214013) do
+ActiveRecord::Schema.define(version: 20180525030740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,12 +25,10 @@ ActiveRecord::Schema.define(version: 20180520214013) do
 
   create_table "orders", force: :cascade do |t|
     t.text "description"
-    t.date "paid_on"
     t.decimal "order_amount"
     t.string "invoice_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "due_on"
     t.string "vendor"
     t.string "show"
     t.string "contact"
@@ -39,6 +37,18 @@ ActiveRecord::Schema.define(version: 20180520214013) do
     t.integer "term"
     t.decimal "shipping_percentage"
     t.decimal "order_amount_with_shipping"
+    t.datetime "ordered_on"
+    t.integer "payable_id"
+  end
+
+  create_table "payables", force: :cascade do |t|
+    t.datetime "paid_on"
+    t.datetime "due_on"
+    t.bigint "order_id"
+    t.decimal "ordered_amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_payables_on_order_id"
   end
 
   create_table "shows", force: :cascade do |t|

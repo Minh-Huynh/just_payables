@@ -1,0 +1,38 @@
+.col-md-11.col-xs-12.offset-md-1.orders_container
+  %h2 PAYABLES
+  =flash_message
+  = bootstrap_form_tag url: '/payables', method: "GET" do |f|
+    = f.text_field :by_due_date, value: params[:by_due_date], label_class: "font-weight-bold float-left mr-2", class: "filter_datepicker col-md-1 float-left", data: {provide: 'datepicker'}
+    = f.text_field :search, hide_label: true, value: params[:search], placeholder: "Type to Search and Press Enter", label_class: "font-weight-bold", class: "col-md-4 float-left ml-5 order-search"
+    = f.submit "Set Filters",{class: "btn btn-success ml-3"}
+  .total_amount_current_orders.font-weight-bold.float-left.col-md-11.mt-5 Total For Payables Displayed (w/ shipping): #{number_to_currency(@orders.sum(:order_amount_with_shipping))}
+  %table.table.table-hover
+    %thead
+    %tbody.thead-dark
+      %tr
+        %th{scope: "col"} Vendor
+        %th{scope: "col"} Amount (w/ Shipping)
+        %th{scope: "col"} Description
+        %th{scope: "col"} Ship On
+        %th{scope: "col"} Due On
+        %th{scope: "col"} Paid On
+        %th{scope: "col"} Invoice 
+        %th{scope: "col"} Actions
+      - @payables.each do |p|
+        %tr{class: "clickable-row #{row_format(p.order)}", data: {href: edit_payable_path(p) }, style: "cursor:pointer;"}
+          %td= p.order.vendor
+          %td= number_to_currency(p.order.order_amount_with_shipping)
+          %td= p.order.description
+          %td= format_date(p.order.ship_on)
+          %td= format_date(p.due_on)
+          %td= format_date(p.paid_on)
+          %td= p.order.invoice_number
+          %td.text-center 
+            - if !p.paid?
+              = form_tag payable_path(id: p.id, payable: {paid_on: format_date(DateTime.now)}), method: "put" do
+                = submit_tag "Mark as Paid", class: "btn btn-danger"
+            - else
+              %strong Paid
+  .offset-md-2.col-md-10
+    = will_paginate @payables, class: "digg_pagination"
+= stylesheet_link_tag "will_paginate"

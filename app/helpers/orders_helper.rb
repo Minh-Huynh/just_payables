@@ -4,12 +4,10 @@ module OrdersHelper
   end
 
   def row_format(order)
-    if order.paid?
+    if order.payable.present? && order.payable.paid?
       'table-success'
-    elsif order.past_due?
-      'table-danger'
-    elsif order.due_this_month?
-      'table-warning'
+    elsif order.received?
+      'table-primary'
     end
   end
 end
